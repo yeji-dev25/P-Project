@@ -17,7 +17,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 # 데이터 로드 및 전처리
-data_path = "./emotion_data.csv"  # 학과 서버 경로에 맞게 조정
+data_path = "./data/emotion_data.csv"  # 학과 서버 경로에 맞게 조정
 df = pd.read_csv(data_path, encoding="cp949")[["발화문", "1번 감정"]].dropna()
 
 # 문자열 → 숫자 라벨 인코딩
