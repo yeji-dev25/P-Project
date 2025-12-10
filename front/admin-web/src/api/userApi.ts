@@ -64,3 +64,64 @@ export const getUsers = async (params: GetUsersParams): Promise<GetUsersResponse
     });
     return response.data;
 };
+
+// 로그인 요청 인터페이스
+export interface LoginRequest {
+    email: string;
+    pwd?: string;
+    password?: string;
+}
+
+/**
+ * 관리자 로그인을 요청합니다.
+ * POST /api/admin/login
+ */
+export const loginAdmin = async (data: LoginRequest): Promise<string> => {
+    // pwd 필드로 전송 시도
+    const payload = {
+        email: data.email,
+        pwd: data.password || data.pwd
+    };
+
+    const response = await axiosInstance.post('/api/admin/login', payload);
+
+    // 응답 처리는 실제 데이터 구조에 따라 달라질 수 있음
+    // 1. 응답 본문이 바로 토큰 문자열인 경우
+    if (typeof response.data === 'string') {
+        return response.data;
+    }
+
+    // 2. 객체 내부에 토큰이 있는 경우 (예: token, accessToken)
+    if (response.data.token) {
+        return response.data.token;
+    }
+
+    if (response.data.accessToken) {
+        return response.data.accessToken;
+    }
+
+    // 3. 응답이 단순 OK이고 토큰이 없는 경우 (예외적 상황)
+    console.warn('Response data:', response.data);
+    throw new Error('서버 응답에서 토큰을 찾을 수 없습니다.');
+};
+
+// 비밀번호 변경 요청 인터페이스
+export interface ChangePasswordRequest {
+    email: string;
+    pwd?: string;
+    newPassword?: string;
+}
+
+/**
+ * 관리자 비밀번호를 변경합니다.
+ * POST /api/admin/change-password
+ */
+export const changePassword = async (data: ChangePasswordRequest): Promise<void> => {
+    const payload = {
+        email: data.email,
+        pwd: data.newPassword || data.pwd
+    };
+
+    // 응답이 UserDTO 또는 성공시 200 OK
+    await axiosInstance.post('/api/admin/change-password', payload);
+};

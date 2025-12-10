@@ -102,7 +102,7 @@ const Login = () => {
                                 <input
                                     type="email"
                                     className="input-field flex-1"
-                                    placeholder="admin@example.com"
+                                    placeholder="admin@test.com"
                                     value={resetEmail}
                                     onChange={(e) => setResetEmail(e.target.value)}
                                 />
@@ -177,7 +177,7 @@ const Login = () => {
                                 <input
                                     type="text"
                                     className="input-field flex-1"
-                                    placeholder="admin@example.com"
+                                    placeholder="admin@test.com"
                                     value={id}
                                     onChange={(e) => setId(e.target.value)}
                                 />
@@ -191,7 +191,7 @@ const Login = () => {
                                 <input
                                     type="password"
                                     className="input-field flex-1"
-                                    placeholder="1234"
+                                    placeholder="pwd1234!"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
