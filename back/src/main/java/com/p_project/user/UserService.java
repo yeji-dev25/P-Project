@@ -33,6 +33,9 @@ public class UserService {
     private final JWTUtil jwtUtil;
     private final ResourcePatternResolver resourcePatternResolver;
 
+    public Optional<UserEntity> findById(Long userId){
+        return userRepository.findById(userId);
+    }
 
     public void resetPassword(PasswordResetDTO dto) {
         UserEntity user = userRepository.findByEmail(dto.getEmail())
@@ -111,7 +114,7 @@ public class UserService {
 
             Optional<UserEntity> user = userRepository.findByEmail(email);
 
-            String role = authentication.getAuthorities().iterator().next().getAuthority();
+            String role = authentication.getAuthorities().iterator().next().getAuthority().toUpperCase();
             Long userId = user.get().getId();
 
             // 2. Access/Refresh Token 생성 (기존 로직 유지)
@@ -119,7 +122,7 @@ public class UserService {
             String refreshToken = jwtUtil.createJwt(userId, email, role, 1000L * 60 * 60 * 24 * 14); // 14일
 
 
-            // 4. JWT를 JSON 응답 본문으로 반환 (핵심 변경)
+            // 4. JWT를 JSON 응답 본문으로 반환
             LoginResponseDTO responseDto = new LoginResponseDTO(
                     accessToken,
                     refreshToken,
@@ -186,33 +189,18 @@ public class UserService {
         return userRepository.findByNickname(nickName);
     }
 
-    public boolean exitsEmail(String email) {
-
-        boolean result = false;
-        if (userRepository.findByEmail(email).isPresent()) {
-            result = true;
-        }
-        return result;
+    public boolean existsEmailExceptUser(String email, Long userId) {
+        return userRepository.existsByEmailAndIdNot(email, userId);
     }
 
-    public boolean exitsNickName(String nickName) {
-
-        boolean result = false;
-        if (userRepository.findByNickname(nickName).isPresent()) {
-            result = true;
-        }
-        return result;
+    public boolean existsNicknameExceptUser(String nickname, Long userId) {
+        return userRepository.existsByNicknameAndIdNot(nickname, userId);
     }
 
     public Long findUserIdByEmail (String email) {
 
             Optional<UserEntity> userEntity  = userRepository.findByEmail(email);
         return userEntity.get().getId();
-    }
-
-    public Optional<UserEntity> findById(Long userId){
-
-        return userRepository.findById(userId);
     }
 
 }
